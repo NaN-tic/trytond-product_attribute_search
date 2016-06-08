@@ -34,7 +34,6 @@ class Product:
         # Attributes: Nan
         # Attributes: !Nan
         
-        print clause
         if clause[1] == 'not ilike':
             where = NotILike(product.attributes, clause[2])
         else:
