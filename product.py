@@ -2,6 +2,7 @@
 # copyright notices and license terms.
 from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
+from sql.operators import NotILike
 
 __metaclass__ = PoolMeta
 __all__ = ['Product']
@@ -24,14 +25,20 @@ class Product:
 
     @classmethod
     def search_attributes_string(cls, name, clause):
-        pool = Pool()
-        Attribute = pool.get('product.attribute')
-        domains = []
-        keys = [x.name for x in Attribute.search([])]
-        for value in str(clause[2]).split(' '):
-            for key in keys:
-                domains.append(('attributes', clause[1], {key: value}))
-        if not domains:
-            return domains
-        domains.insert(0, 'OR')
-        return domains
+        Product = Pool().get('product.product')
+        product = Product.__table__()
+
+        # search product attributes in text plain (not dict) (keys and values)
+        # Support ilike and not ilike opperators
+        # Examples:
+        # Attributes: Nan
+        # Attributes: !Nan
+        
+        print clause
+        if clause[1] == 'not ilike':
+            where = NotILike(product.attributes, clause[2])
+        else:
+            where = product.attributes.ilike(clause[2])
+        query = product.select(product.id, where=where)
+
+        return [('id', 'in', query)]
