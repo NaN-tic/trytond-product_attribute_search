@@ -4,12 +4,14 @@ from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
 from sql.operators import NotILike
 
-__metaclass__ = PoolMeta
+
 __all__ = ['Product']
 
 
 class Product:
     __name__ = 'product.product'
+    __metaclass__ = PoolMeta
+    
     attributes_string = fields.Function(fields.Char('Attributes'),
         'get_attributes_string', searcher='search_attributes_string')
 
@@ -33,7 +35,7 @@ class Product:
         # Examples:
         # Attributes: Nan
         # Attributes: !Nan
-        
+
         if clause[1] == 'not ilike':
             where = NotILike(product.attributes, clause[2])
         else:
