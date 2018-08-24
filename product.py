@@ -8,9 +8,8 @@ from sql.operators import NotILike
 __all__ = ['Product']
 
 
-class Product:
+class Product(metaclass=PoolMeta):
     __name__ = 'product.product'
-    __metaclass__ = PoolMeta
     
     attributes_string = fields.Function(fields.Char('Attributes'),
         'get_attributes_string', searcher='search_attributes_string')
@@ -22,7 +21,7 @@ class Product:
             if not product.attributes:
                 continue
             result[product.id] = ','.join(['%s:%s' % (key, value)
-                    for key, value in product.attributes.iteritems()])
+                    for key, value in product.attributes.items()])
         return result
 
     @classmethod
