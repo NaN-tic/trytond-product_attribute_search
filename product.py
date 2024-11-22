@@ -10,7 +10,7 @@ __all__ = ['Product']
 
 class Product(metaclass=PoolMeta):
     __name__ = 'product.product'
-    
+
     attributes_string = fields.Function(fields.Char('Attributes'),
         'get_attributes_string', searcher='search_attributes_string')
 
